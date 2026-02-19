@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mixer AI — 최적의 AI 테크스택 추천기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ===================== RESET & BASE ===================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-root:       #03030f;
+    --bg-card:       #090920;
+    --bg-card-hover: #0f0f2e;
+    --primary-a:     #6C63FF;
+    --primary-b:     #48CAE4;
+    --accent:        #00F5D4;
+    --accent-dim:    rgba(0, 245, 212, 0.15);
+    --accent-glow:   rgba(0, 245, 212, 0.35);
+    --purple-glow:   rgba(108, 99, 255, 0.4);
+    --cyan-glow:     rgba(72, 202, 228, 0.3);
+    --text-main:     #E2E8F0;
+    --text-sub:      #94A3B8;
+    --text-dim:      #4A5568;
+    --border:        rgba(108, 99, 255, 0.2);
+    --border-hover:  rgba(0, 245, 212, 0.4);
+    --grad-main:     linear-gradient(135deg, var(--primary-a), var(--primary-b));
+    --grad-accent:   linear-gradient(135deg, var(--accent), var(--primary-b));
+    --font-display:  'Syne', sans-serif;
+    --font-body:     'DM Sans', sans-serif;
+    --font-mono:     'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-root);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ===================== BACKGROUND LAYERS ===================== */
+  .bg-layer {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-noise {
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+  .bg-orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none; z-index: 0;
+    animation: orbFloat 12s ease-in-out infinite alternate;
+  }
+  .bg-orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(108,99,255,0.18), transparent 70%);
+    top: -200px; left: -200px;
+    animation-duration: 15s;
+  }
+  .bg-orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,245,212,0.12), transparent 70%);
+    bottom: -100px; right: -100px;
+    animation-duration: 18s; animation-direction: alternate-reverse;
+  }
+  .bg-orb-3 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(72,202,228,0.1), transparent 70%);
+    top: 40%; left: 50%; transform: translate(-50%,-50%);
+    animation-duration: 20s;
+  }
+  @keyframes orbFloat {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(40px, 30px) scale(1.08); }
+  }
+
+  /* ===================== GRID OVERLAY ===================== */
+  .grid-overlay {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  /* ===================== LAYOUT WRAPPER ===================== */
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===================== NAV ===================== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(3,3,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(108,99,255,0.1);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 800;
+    background: var(--grad-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+  .nav-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; font-weight: 500;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px; border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: badgePulse 3s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%,100% { box-shadow: 0 0 0 0 var(--accent-dim); }
+    50%      { box-shadow: 0 0 0 8px transparent; }
+  }
+
+  /* ===================== HERO SECTION ===================== */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 120px 24px 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 28px;
+    padding: 6px 16px;
+    border: 1px solid rgba(0,245,212,0.3);
+    border-radius: 100px;
+    background: rgba(0,245,212,0.05);
+    animation: fadeSlideDown 0.8s ease both;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: dotPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+    animation: fadeSlideDown 0.8s 0.1s ease both;
+  }
+  .hero-title .line1 { display: block; color: var(--text-main); }
+  .hero-title .line2 {
+    display: block;
+    background: var(--grad-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem; font-weight: 300;
+    color: var(--text-sub);
+    max-width: 540px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+    animation: fadeSlideDown 0.8s 0.2s ease both;
+  }
+  .hero-sub strong { color: var(--text-main); font-weight: 500; }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== INPUT AREA ===================== */
+  .input-area {
+    width: 100%; max-width: 760px;
+    animation: fadeSlideUp 0.9s 0.3s ease both;
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .textarea-wrap {
+    position: relative; margin-bottom: 20px;
+  }
+  .textarea-wrap::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 18px;
+    background: var(--grad-main);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 0;
+  }
+  .textarea-wrap:focus-within::before { opacity: 0.6; }
+
+  #project-input {
+    width: 100%;
+    min-height: 130px;
+    padding: 22px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 1rem; font-weight: 300;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative; z-index: 1;
+  }
+  #project-input::placeholder { color: var(--text-dim); }
+  #project-input:focus {
+    border-color: rgba(108,99,255,0.5);
+    box-shadow: 0 0 0 1px rgba(108,99,255,0.3), 0 8px 40px rgba(108,99,255,0.15);
+  }
+
+  /* ===================== FILTERS ===================== */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: rgba(9,9,32,0.8);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .filter-group {
+    display: flex; flex-direction: column; gap: 8px;
+    flex: 1; min-width: 140px;
+  }
+  .filter-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .filter-options { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-btn {
+    font-family: var(--font-body);
+    font-size: 0.8rem; font-weight: 400;
+    padding: 5px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .filter-btn.multi.active {
+    background: rgba(108,99,255,0.15);
+    border-color: var(--primary-a);
+    color: var(--primary-a);
+  }
+
+  /* ===================== CTA BUTTON ===================== */
+  .cta-wrap { text-align: center; }
+  .btn-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 40px;
+    background: var(--grad-main);
+    border: none; border-radius: 14px;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 30px rgba(108,99,255,0.4);
+  }
+  .btn-cta::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(108,99,255,0.55); }
+  .btn-cta:hover::after { opacity: 1; }
+  .btn-cta:active { transform: translateY(0); }
+  .btn-cta svg { width: 18px; height: 18px; transition: transform 0.3s; }
+  .btn-cta:hover svg { transform: translateX(3px); }
+
+  /* ===================== EXAMPLE CHIPS ===================== */
+  .examples {
+    margin-top: 32px;
+    animation: fadeSlideUp 0.9s 0.5s ease both;
+  }
+  .examples-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .chip {
+    font-size: 0.8rem; font-weight: 400;
+    padding: 7px 16px;
+    background: rgba(9,9,32,0.8);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .chip:hover {
+    border-color: var(--border-hover);
+    color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  /* ===================== FEATURES SECTION ===================== */
+  #features {
+    padding: 80px 0;
+  }
+  .section-header {
+    text-align: center; margin-bottom: 48px;
+  }
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px; display: block;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700; letter-spacing: -0.03em;
+    color: var(--text-main); line-height: 1.1;
+  }
+  .section-title span {
+    background: var(--grad-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--grad-main);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-4px); border-color: var(--border-hover); box-shadow: 0 12px 40px rgba(0,245,212,0.1); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    font-size: 2rem; margin-bottom: 16px; display: block;
+  }
+  .feature-name {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    color: var(--text-main); margin-bottom: 8px;
+  }
+  .feature-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; }
+
+  /* ===================== LOADING SECTION ===================== */
+  #loading {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(3,3,15,0.92);
+    backdrop-filter: blur(20px);
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 32px;
+    text-align: center;
+  }
+  #loading.show { display: flex; }
+
+  .loader-brain {
+    width: 80px; height: 80px;
+    position: relative;
+  }
+  .brain-ring {
+    position: absolute; border-radius: 50%;
+    border: 2px solid transparent;
+    animation: spinRing linear infinite;
+  }
+  .brain-ring-1 {
+    inset: 0;
+    border-top-color: var(--primary-a);
+    animation-duration: 1.2s;
+  }
+  .brain-ring-2 {
+    inset: 10px;
+    border-right-color: var(--primary-b);
+    animation-duration: 1.8s; animation-direction: reverse;
+  }
+  .brain-ring-3 {
+    inset: 20px;
+    border-bottom-color: var(--accent);
+    animation-duration: 2.4s;
+  }
+  .brain-dot {
+    position: absolute; inset: 32px;
+    background: var(--grad-main);
+    border-radius: 50%;
+    animation: dotGlow 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes spinRing {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes dotGlow {
+    from { box-shadow: 0 0 8px var(--primary-a); transform: scale(0.8); }
+    to   { box-shadow: 0 0 20px var(--accent); transform: scale(1.1); }
+  }
+
+  .loading-steps { list-style: none; }
+  .loading-step {
+    font-family: var(--font-mono);
+    font-size: 0.85rem; color: var(--text-sub);
+    padding: 6px 0;
+    transition: color 0.4s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .loading-step.active { color: var(--accent); }
+  .loading-step.done { color: var(--text-dim); }
+  .step-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    border: 1px solid currentColor; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .loading-step.active .step-dot { background: var(--accent); }
+  .loading-step.done .step-dot { background: var(--text-dim); }
+
+  /* ===================== RESULTS SECTION ===================== */
+  #results {
+    display: none;
+    padding: 100px 0 80px;
+  }
+  #results.show { display: block; }
+
+  .results-header {
+    margin-bottom: 48px;
+  }
+  .results-query {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 16px;
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .query-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--primary-a);
+  }
+  .query-text { font-size: 0.85rem; color: var(--text-sub); }
+
+  .results-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.2; margin-bottom: 12px;
+  }
+  .results-subtitle { font-size: 0.95rem; color: var(--text-sub); }
+
+  /* ===================== STACK CARDS ===================== */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; margin-bottom: 40px;
+  }
+  .stack-card {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    animation: cardEntrance 0.6s ease both;
+  }
+  .stack-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0,245,212,0.3);
+    box-shadow: 0 16px 48px rgba(108,99,255,0.15);
+  }
+  .stack-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(108,99,255,0.06), transparent 60%);
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .stack-card:hover::after { opacity: 1; }
+
+  @keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .stack-card:nth-child(1) { animation-delay: 0.05s; }
+  .stack-card:nth-child(2) { animation-delay: 0.1s; }
+  .stack-card:nth-child(3) { animation-delay: 0.15s; }
+  .stack-card:nth-child(4) { animation-delay: 0.2s; }
+  .stack-card:nth-child(5) { animation-delay: 0.25s; }
+
+  .card-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 16px;
+  }
+  .card-icon-wrap {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.2);
+    flex-shrink: 0;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 100px;
+  }
+  .tag-category {
+    background: rgba(108,99,255,0.15); color: var(--primary-a);
+    border: 1px solid rgba(108,99,255,0.3);
+  }
+  .tag-free    { background: rgba(0,245,212,0.12); color: var(--accent); border: 1px solid rgba(0,245,212,0.3); }
+  .tag-paid    { background: rgba(251,191,36,0.1); color: #FBB924; border: 1px solid rgba(251,191,36,0.3); }
+  .tag-usage   { background: rgba(72,202,228,0.1); color: var(--primary-b); border: 1px solid rgba(72,202,228,0.3); }
+
+  .card-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--text-main); margin-bottom: 6px;
+  }
+  .card-subtitle { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 14px; }
+  .card-desc { font-size: 0.875rem; color: var(--text-sub); line-height: 1.65; margin-bottom: 18px; }
+
+  .card-meta {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .meta-row { display: flex; align-items: center; gap: 12px; }
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim);
+    width: 56px; flex-shrink: 0;
+  }
+  .meta-value { font-size: 0.8rem; color: var(--text-sub); }
+
+  .difficulty-dots { display: flex; gap: 5px; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid var(--text-dim);
+    transition: background 0.2s;
+  }
+  .dot.filled { background: var(--accent); border-color: var(--accent); }
+  .dot.half-filled { background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); border-color: var(--accent); }
+
+  .card-price {
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    padding: 3px 10px; border-radius: 6px;
+    background: rgba(0,245,212,0.08); color: var(--accent);
+    border: 1px solid rgba(0,245,212,0.2);
+  }
+
+  .card-footer { border-top: 1px solid var(--border); padding-top: 16px; }
+  .btn-docs {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-body);
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--primary-b);
+    background: transparent; border: 1px solid rgba(72,202,228,0.25);
+    padding: 7px 16px; border-radius: 8px;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-docs:hover {
+    background: rgba(72,202,228,0.1);
+    border-color: rgba(72,202,228,0.5);
+    transform: translateX(2px);
+  }
+  .btn-docs svg { width: 12px; height: 12px; }
+
+  /* ===================== ARCHITECTURE DIAGRAM ===================== */
+  .arch-section {
+    padding: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px; margin-bottom: 40px;
+    animation: cardEntrance 0.6s 0.4s ease both;
+  }
+  .arch-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 8px; color: var(--text-main);
+  }
+  .arch-subtitle { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 32px; }
+
+  .arch-flow {
+    display: flex; align-items: center;
+    flex-wrap: wrap; gap: 0;
+    justify-content: center;
+  }
+  .arch-node {
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    padding: 16px 20px; min-width: 110px;
+    background: rgba(3,3,15,0.8);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .arch-node:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+  .arch-node-icon { font-size: 1.5rem; margin-bottom: 6px; }
+  .arch-node-name {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-main);
+  }
+  .arch-node-desc { font-size: 0.7rem; color: var(--text-dim); margin-top: 3px; }
+
+  .arch-arrow {
+    display: flex; align-items: center;
+    padding: 0 6px; color: var(--border-hover);
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .arch-arrow svg { width: 24px; height: 24px; color: var(--primary-a); opacity: 0.6; }
+
+  .arch-cluster {
+    display: flex; flex-direction: column; gap: 10px;
+    align-items: center;
+  }
+  .arch-cluster-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 6px; text-align: center;
+  }
+  .arch-nodes-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .arch-node.small { padding: 10px 14px; min-width: 90px; }
+  .arch-node.small .arch-node-icon { font-size: 1.1rem; margin-bottom: 4px; }
+
+  /* ===================== ACTIONS ===================== */
+  .results-actions {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 60px;
+    animation: cardEntrance 0.6s 0.5s ease both;
+  }
+  .btn-action {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    border: 1px solid;
+  }
+  .btn-action svg { width: 16px; height: 16px; }
+  .btn-pdf {
+    background: rgba(108,99,255,0.15); color: var(--primary-a);
+    border-color: rgba(108,99,255,0.35);
+  }
+  .btn-pdf:hover { background: rgba(108,99,255,0.25); transform: translateY(-2px); }
+  .btn-share {
+    background: rgba(0,245,212,0.1); color: var(--accent);
+    border-color: rgba(0,245,212,0.3);
+  }
+  .btn-share:hover { background: rgba(0,245,212,0.18); transform: translateY(-2px); }
+  .btn-reset {
+    background: transparent; color: var(--text-sub);
+    border-color: var(--border);
+  }
+  .btn-reset:hover { color: var(--text-main); border-color: var(--text-sub); transform: translateY(-2px); }
+
+  /* ===================== TOAST ===================== */
+  .toast {
+    position: fixed; bottom: 32px; right: 32px; z-index: 500;
+    padding: 12px 24px;
+    background: rgba(0,245,212,0.15);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    font-size: 0.875rem; color: var(--accent);
+    backdrop-filter: blur(20px);
+    transform: translateY(80px) scale(0.9); opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0) scale(1); opacity: 1; }
+
+  /* ===================== FOOTER ===================== */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.2rem; font-weight: 800;
+    background: var(--grad-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 12px;
+  }
+  .footer-text { font-size: 0.8rem; color: var(--text-dim); }
+  .footer-text a { color: var(--accent); text-decoration: none; }
+  .footer-text a:hover { text-decoration: underline; }
+
+  /* ===================== SCROLL REVEAL ===================== */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); }
+    .hero-sub { font-size: 0.95rem; }
+    .filters { gap: 14px; }
+    .filter-group { min-width: 100%; }
+    .stack-grid { grid-template-columns: 1fr; }
+    .arch-flow { flex-direction: column; gap: 8px; }
+    .arch-arrow { transform: rotate(90deg); }
+    .arch-nodes-row { flex-direction: column; align-items: center; }
+    .results-actions { flex-direction: column; }
+    .btn-action { justify-content: center; }
+    .chips { justify-content: flex-start; }
+    .arch-section { padding: 24px; }
+  }
+  @media (max-width: 480px) {
+    .wrapper { padding: 0 16px; }
+    .feature-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background Layers -->
+<div class="bg-layer bg-noise"></div>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="grid-overlay"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo">Mixer<span>.</span>AI</div>
+  <div class="nav-badge">Beta</div>
+</nav>
+
+<!-- Loading Overlay -->
+<div id="loading">
+  <div class="loader-brain">
+    <div class="brain-ring brain-ring-1"></div>
+    <div class="brain-ring brain-ring-2"></div>
+    <div class="brain-ring brain-ring-3"></div>
+    <div class="brain-dot"></div>
+  </div>
+  <ul class="loading-steps">
+    <li class="loading-step active" id="step-1">
+      <span class="step-dot"></span>입력하신 프로젝트를 분석 중입니다...
+    </li>
+    <li class="loading-step" id="step-2">
+      <span class="step-dot"></span>최적의 AI 스택을 탐색 중입니다...
+    </li>
+    <li class="loading-step" id="step-3">
+      <span class="step-dot"></span>추천 결과를 준비하고 있습니다...
+    </li>
+  </ul>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">링크가 클립보드에 복사되었습니다!</div>
+
+<!-- =================== HERO =================== -->
+<section id="hero">
+  <div class="wrapper" style="width:100%">
+    <span class="hero-eyebrow">Mixer AI — AI-Powered Stack Recommender</span>
+    <h1 class="hero-title">
+      <span class="line1">당신의 아이디어에</span>
+      <span class="line2">완벽한 AI 스택을</span>
+    </h1>
+    <p class="hero-sub">
+      프로젝트 아이디어를 <strong>자연어</strong>로 입력하면<br>
+      최적의 AI 도구 조합을 즉시 추천해드립니다.
+    </p>
+
+    <div class="input-area">
+      <div class="textarea-wrap">
+        <textarea
+          id="project-input"
+          placeholder="어떤 프로젝트를 만들고 싶으신가요? 아이디어를 자유롭게 설명해주세요...&#10;&#10;예) 사용자의 얼굴을 인식해서 닮은 연예인을 찾아주는 앱을 만들고 싶어요."
+        ></textarea>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <span class="filter-label">예산</span>
+          <div class="filter-options" id="budget-filter">
+            <button class="filter-btn active" data-group="budget" data-value="free">무료</button>
+            <button class="filter-btn" data-group="budget" data-value="paid">유료</button>
+            <button class="filter-btn" data-group="budget" data-value="mixed">혼합</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">기술 수준</span>
+          <div class="filter-options" id="skill-filter">
+            <button class="filter-btn" data-group="skill" data-value="nocode">노코드</button>
+            <button class="filter-btn active" data-group="skill" data-value="lowcode">로우코드</button>
+            <button class="filter-btn" data-group="skill" data-value="pro">전문개발</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">플랫폼 (복수 선택)</span>
+          <div class="filter-options" id="platform-filter">
+            <button class="filter-btn multi active" data-group="platform" data-value="web">Web</button>
+            <button class="filter-btn multi" data-group="platform" data-value="ios">iOS</button>
+            <button class="filter-btn multi" data-group="platform" data-value="android">Android</button>
+            <button class="filter-btn multi active" data-group="platform" data-value="all">All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-wrap">
+        <button class="btn-cta" id="btn-submit">
+          AI 스택 추천받기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="examples">
+      <span class="examples-label">예시 프롬프트로 빠르게 시작하기</span>
+      <div class="chips">
+        <span class="chip" data-text="얼굴 인식으로 닮은 연예인 찾기 앱">얼굴 인식으로 닮은 연예인 찾기 앱</span>
+        <span class="chip" data-text="AI 챗봇이 포함된 고객센터 시스템">AI 챗봇이 포함된 고객센터 시스템</span>
+        <span class="chip" data-text="음성을 텍스트로 변환하는 회의록 자동 정리 서비스">회의록 자동 정리 서비스</span>
+        <span class="chip" data-text="상품 이미지를 업로드하면 설명을 자동 생성해주는 쇼핑몰">상품 이미지 → 설명 자동 생성 쇼핑몰</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FEATURES =================== -->
+<section id="features">
+  <div class="wrapper">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Why AI Stack?</span>
+      <h2 class="section-title">고민 없이, <span>바로 시작</span>하세요</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">💬</span>
+        <div class="feature-name">자연어로 간편하게</div>
+        <p class="feature-desc">복잡한 기술 용어 없이 평소 말하듯 아이디어를 설명하면 됩니다. AI가 알아서 분석합니다.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🎯</span>
+        <div class="feature-name">카테고리별 최적 추천</div>
+        <p class="feature-desc">LLM, Vision, 음성, 데이터베이스 등 기능별로 가장 적합한 도구를 엄선해 추천합니다.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">💰</span>
+        <div class="feature-name">비용 완전 투명 공개</div>
+        <p class="feature-desc">무료 플랜 여부, 예상 API 비용, 오픈소스 여부를 한눈에 비교할 수 있습니다.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🚀</span>
+        <div class="feature-name">바로 시작하는 링크</div>
+        <p class="feature-desc">추천된 모든 도구의 공식 문서와 시작 가이드로 바로 이동해 즉시 개발을 시작하세요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== RESULTS =================== -->
+<section id="results">
+  <div class="wrapper">
+    <div class="results-header">
+      <div class="results-query">
+        <span class="query-label">검색 결과</span>
+        <span class="query-text" id="result-query-text">얼굴 인식으로 닮은 연예인 찾기 앱</span>
+      </div>
+      <h2 class="results-title">추천 AI 테크스택<br><span style="background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">5가지 최적 도구</span></h2>
+      <p class="results-subtitle">입력하신 프로젝트에 최적화된 AI 서비스 조합입니다. 각 도구는 호환성과 비용 효율을 고려해 선정되었습니다.</p>
+    </div>
+
+    <!-- Stack Cards -->
+    <div class="stack-grid" id="stack-grid">
+
+      <!-- Card 1: LLM -->
+      <div class="stack-card">
+        <div class="card-top">
+          <div class="card-icon-wrap">🧠</div>
+          <div class="card-tags">
+            <span class="tag tag-category">LLM</span>
+            <span class="tag tag-usage">사용량 기반</span>
+          </div>
+        </div>
+        <div class="card-name">Claude API</div>
+        <div class="card-subtitle">by Anthropic</div>
+        <p class="card-desc">자연어 이해와 생성에 최적화된 최신 LLM. 연예인 정보 검색, 결과 설명 생성, 사용자 대화 처리에 활용합니다. 긴 컨텍스트 창으로 복잡한 쿼리도 정확히 처리합니다.</p>
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-label">비용</span>
+            <span class="card-price">$3~15 / 1M tokens</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">난이도</span>
+            <div class="difficulty-dots">
+              <span class="dot filled"></span><span class="dot filled"></span>
+              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://docs.anthropic.com" target="_blank" class="btn-docs">
+            공식 문서 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 2: Computer Vision -->
+      <div class="stack-card">
+        <div class="card-top">
+          <div class="card-icon-wrap">👁️</div>
+          <div class="card-tags">
+            <span class="tag tag-category">Vision</span>
+            <span class="tag tag-usage">사용량 기반</span>
+          </div>
+        </div>
+        <div class="card-name">AWS Rekognition</div>
+        <div class="card-subtitle">by Amazon Web Services</div>
+        <p class="card-desc">업계 최고 수준의 얼굴 감지·분석·비교 API. 얼굴 특징점 추출 및 유사도 비교에 특화되어 있습니다. Google Cloud Vision보다 얼굴 인식 정확도가 높고 AWS 생태계와 통합이 용이합니다.</p>
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-label">비용</span>
+            <span class="card-price">$1 / 1,000 이미지</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">난이도</span>
+            <div class="difficulty-dots">
+              <span class="dot filled"></span><span class="dot filled"></span>
+              <span class="dot filled"></span><span class="dot filled"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://docs.aws.amazon.com/rekognition" target="_blank" class="btn-docs">
+            공식 문서 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 3: Database -->
+      <div class="stack-card">
+        <div class="card-top">
+          <div class="card-icon-wrap">🗄️</div>
+          <div class="card-tags">
+            <span class="tag tag-category">Database</span>
+            <span class="tag tag-free">무료 플랜</span>
+          </div>
+        </div>
+        <div class="card-name">Supabase</div>
+        <div class="card-subtitle">PostgreSQL + Realtime + Auth</div>
+        <p class="card-desc">오픈소스 Firebase 대안. 연예인 얼굴 벡터 데이터, 사용자 검색 기록, 매칭 결과 저장에 적합합니다. pgvector 확장으로 임베딩 기반 유사도 검색도 가능합니다.</p>
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-label">비용</span>
+            <span class="card-price">무료 ~ $25/월</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">난이도</span>
+            <div class="difficulty-dots">
+              <span class="dot filled"></span><span class="dot filled"></span>
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://supabase.com/docs" target="_blank" class="btn-docs">
+            공식 문서 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 4: Backend -->
+      <div class="stack-card">
+        <div class="card-top">
+          <div class="card-icon-wrap">⚡</div>
+          <div class="card-tags">
+            <span class="tag tag-category">Backend</span>
+            <span class="tag tag-free">무료 플랜</span>
+          </div>
+        </div>
+        <div class="card-name">Vercel + FastAPI</div>
+        <div class="card-subtitle">Edge Functions + Python API</div>
+        <p class="card-desc">Vercel로 프론트엔드와 서버리스 함수를 배포하고, FastAPI로 이미지 처리 및 AI API 오케스트레이션을 담당합니다. 빠른 배포와 자동 스케일링이 강점입니다.</p>
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-label">비용</span>
+            <span class="card-price">무료 ~ $20/월</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">난이도</span>
+            <div class="difficulty-dots">
+              <span class="dot filled"></span><span class="dot filled"></span>
+              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://vercel.com/docs" target="_blank" class="btn-docs">
+            공식 문서 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 5: Frontend -->
+      <div class="stack-card">
+        <div class="card-top">
+          <div class="card-icon-wrap">🎨</div>
+          <div class="card-tags">
+            <span class="tag tag-category">Frontend</span>
+            <span class="tag tag-free">오픈소스</span>
+          </div>
+        </div>
+        <div class="card-name">Next.js + Tailwind CSS</div>
+        <div class="card-subtitle">React Framework + Utility CSS</div>
+        <p class="card-desc">이미지 업로드, 카메라 접근, 결과 시각화에 최적화된 React 프레임워크. Tailwind로 빠른 UI 개발이 가능하며, App Router로 서버/클라이언트 컴포넌트를 유연하게 구성할 수 있습니다.</p>
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-label">비용</span>
+            <span class="card-price">무료 (오픈소스)</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">난이도</span>
+            <div class="difficulty-dots">
+              <span class="dot filled"></span><span class="dot filled"></span>
+              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="https://nextjs.org/docs" target="_blank" class="btn-docs">
+            공식 문서 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /stack-grid -->
+
+    <!-- Architecture Diagram -->
+    <div class="arch-section">
+      <h3 class="arch-title">아키텍처 다이어그램</h3>
+      <p class="arch-subtitle">추천 스택의 데이터 흐름 및 연결 구조</p>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="arch-node-icon">👤</div>
+          <div class="arch-node-name">사용자</div>
+          <div class="arch-node-desc">이미지 업로드</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="arch-node">
+          <div class="arch-node-icon">🎨</div>
+          <div class="arch-node-name">Next.js</div>
+          <div class="arch-node-desc">Frontend</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="arch-node">
+          <div class="arch-node-icon">⚡</div>
+          <div class="arch-node-name">FastAPI</div>
+          <div class="arch-node-desc">Backend API</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="arch-cluster">
+          <div class="arch-cluster-label">AI &amp; Data Layer</div>
+          <div class="arch-nodes-row">
+            <div class="arch-node small">
+              <div class="arch-node-icon">👁️</div>
+              <div class="arch-node-name">Rekognition</div>
+              <div class="arch-node-desc">Face Analysis</div>
+            </div>
+            <div class="arch-node small">
+              <div class="arch-node-icon">🧠</div>
+              <div class="arch-node-name">Claude API</div>
+              <div class="arch-node-desc">Text Gen</div>
+            </div>
+            <div class="arch-node small">
+              <div class="arch-node-icon">🗄️</div>
+              <div class="arch-node-name">Supabase</div>
+              <div class="arch-node-desc">Database</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="results-actions">
+      <button class="btn-action btn-pdf" id="btn-pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        PDF 다운로드
+      </button>
+      <button class="btn-action btn-share" id="btn-share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        링크 공유
+      </button>
+      <button class="btn-action btn-reset" id="btn-reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        다시 검색하기
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="wrapper">
+    <div class="footer-logo">Mixer AI</div>
+    <p class="footer-text">
+      PRD 기반 데모 프로젝트 &nbsp;·&nbsp; Built with ❤️ and AI &nbsp;·&nbsp;
+      <a href="#">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ===================== FILTER TOGGLE =====================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.dataset.group;
+    const isMulti = btn.classList.contains('multi');
+    if (!isMulti) {
+      document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    } else {
+      btn.classList.toggle('active');
+    }
+  });
+});
+
+// ===================== CHIP CLICK =====================
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const input = document.getElementById('project-input');
+    input.value = chip.dataset.text;
+    input.focus();
+    input.style.borderColor = 'rgba(0,245,212,0.5)';
+    setTimeout(() => input.style.borderColor = '', 1200);
+  });
+});
+
+// ===================== CARD MOUSE EFFECT =====================
+document.querySelectorAll('.stack-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+    card.style.setProperty('--mx', x + '%');
+    card.style.setProperty('--my', y + '%');
+  });
+});
+
+// ===================== LOADING SEQUENCE =====================
+function runLoading(query) {
+  const loading = document.getElementById('loading');
+  const steps = ['step-1', 'step-2', 'step-3'];
+  steps.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active', 'done');
+  });
+
+  loading.classList.add('show');
+  let current = 0;
+
+  function nextStep() {
+    if (current > 0) {
+      document.getElementById(steps[current - 1]).classList.remove('active');
+      document.getElementById(steps[current - 1]).classList.add('done');
+    }
+    if (current < steps.length) {
+      document.getElementById(steps[current]).classList.add('active');
+      current++;
+      if (current < steps.length) setTimeout(nextStep, 900);
+      else setTimeout(showResults, 1000);
+    }
+  }
+
+  nextStep();
+
+  function showResults() {
+    loading.classList.remove('show');
+    const results = document.getElementById('results');
+    results.classList.add('show');
+    const queryText = document.getElementById('result-query-text');
+    queryText.textContent = query || '얼굴 인식으로 닮은 연예인 찾기 앱';
+    setTimeout(() => {
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+// ===================== SUBMIT =====================
+document.getElementById('btn-submit').addEventListener('click', () => {
+  const input = document.getElementById('project-input');
+  const query = input.value.trim();
+  if (!query) {
+    input.style.borderColor = 'rgba(255,80,80,0.5)';
+    input.style.boxShadow = '0 0 0 1px rgba(255,80,80,0.3)';
+    input.placeholder = '아이디어를 입력해주세요!';
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+      input.placeholder = '어떤 프로젝트를 만들고 싶으신가요? 아이디어를 자유롭게 설명해주세요...';
+    }, 2000);
+    return;
+  }
+  runLoading(query);
+});
+
+// Enter key in textarea (Ctrl+Enter)
+document.getElementById('project-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    document.getElementById('btn-submit').click();
+  }
+});
+
+// ===================== RESET =====================
+document.getElementById('btn-reset').addEventListener('click', () => {
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('project-input').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => document.getElementById('project-input').focus(), 600);
+});
+
+// ===================== SHARE =====================
+document.getElementById('btn-share').addEventListener('click', () => {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url);
+  }
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+});
+
+// ===================== PDF =====================
+document.getElementById('btn-pdf').addEventListener('click', () => {
+  window.print();
+});
+
+// ===================== SCROLL REVEAL =====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+
+</body>
+</html>
