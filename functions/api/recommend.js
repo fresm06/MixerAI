@@ -20,7 +20,7 @@ export async function onRequestPost(context) {
     return Response.json({ error: { message: '잘못된 요청 형식입니다.' } }, { status: 400 });
   }
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
 
   const upstream = await fetch(geminiUrl, {
     method: 'POST',
