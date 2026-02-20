@@ -1447,7 +1447,6 @@
               <button class="filter-btn multi" data-group="platform" data-value="android">Android</button>
               <button class="filter-btn multi" data-group="platform" data-value="windows">Windows</button>
               <button class="filter-btn multi" data-group="platform" data-value="mac">Mac</button>
-              <button class="filter-btn multi active" data-group="platform" data-value="all">All</button>
             </div>
           </div>
         </div>
@@ -1524,62 +1523,11 @@
       <!-- Stack Cards (동적 렌더링) -->
       <div class="stack-grid" id="stack-grid"></div><!-- /stack-grid -->
 
-      <!-- Architecture Diagram -->
+      <!-- Architecture Diagram (동적 렌더링) -->
       <div class="arch-section">
         <h3 class="arch-title">아키텍처 다이어그램</h3>
         <p class="arch-subtitle">추천 스택의 데이터 흐름 및 연결 구조</p>
-        <div class="arch-flow">
-          <div class="arch-node">
-            <div class="arch-node-icon">👤</div>
-            <div class="arch-node-name">사용자</div>
-            <div class="arch-node-desc">이미지 업로드</div>
-          </div>
-          <div class="arch-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-icon">🎨</div>
-            <div class="arch-node-name">Next.js</div>
-            <div class="arch-node-desc">Frontend</div>
-          </div>
-          <div class="arch-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-icon">⚡</div>
-            <div class="arch-node-name">FastAPI</div>
-            <div class="arch-node-desc">Backend API</div>
-          </div>
-          <div class="arch-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </div>
-          <div class="arch-cluster">
-            <div class="arch-cluster-label">AI &amp; Data Layer</div>
-            <div class="arch-nodes-row">
-              <div class="arch-node small">
-                <div class="arch-node-icon">👁️</div>
-                <div class="arch-node-name">Rekognition</div>
-                <div class="arch-node-desc">Face Analysis</div>
-              </div>
-              <div class="arch-node small">
-                <div class="arch-node-icon">🧠</div>
-                <div class="arch-node-name">Claude API</div>
-                <div class="arch-node-desc">Text Gen</div>
-              </div>
-              <div class="arch-node small">
-                <div class="arch-node-icon">🗄️</div>
-                <div class="arch-node-name">Supabase</div>
-                <div class="arch-node-desc">Database</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="arch-flow" id="arch-flow"></div>
       </div>
 
       <!-- Action Buttons -->
@@ -1781,6 +1729,48 @@
       });
     }
 
+    // ===================== RENDER ARCH DIAGRAM =====================
+    function renderArchDiagram(stacks) {
+      const arrow = `<div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`;
+
+      const isFrontend = s => /프론트|frontend|front-end|UI\/UX|UI\b/i.test(s.category);
+      const isBackend  = s => /백엔드|backend|back-end|서버|server/i.test(s.category);
+
+      const frontends = stacks.filter(isFrontend);
+      const backends  = stacks.filter(isBackend);
+      const aiLayer   = stacks.filter(s => !isFrontend(s) && !isBackend(s));
+
+      const makeNode = (icon, name, desc, small = false) =>
+        `<div class="arch-node${small ? ' small' : ''}">
+          <div class="arch-node-icon">${icon}</div>
+          <div class="arch-node-name">${name}</div>
+          <div class="arch-node-desc">${desc}</div>
+        </div>`;
+
+      const frontendNode = frontends.length
+        ? makeNode(frontends[0].icon, frontends[0].name, 'Frontend')
+        : makeNode('🖥️', 'Frontend', 'Web App');
+
+      const backendNode = backends.length
+        ? makeNode(backends[0].icon, backends[0].name, 'Backend API')
+        : makeNode('⚡', 'Backend', 'API Server');
+
+      const aiNodes = (aiLayer.length ? aiLayer : stacks)
+        .map(s => makeNode(s.icon || '🤖', s.name, s.category, true)).join('');
+
+      document.getElementById('arch-flow').innerHTML =
+        makeNode('👤', '사용자', '요청') +
+        arrow +
+        frontendNode +
+        arrow +
+        backendNode +
+        arrow +
+        `<div class="arch-cluster">
+          <div class="arch-cluster-label">AI &amp; Data Layer</div>
+          <div class="arch-nodes-row">${aiNodes}</div>
+        </div>`;
+    }
+
     // ===================== LOADING + API =====================
     async function runLoading(query, filters) {
       const loading = document.getElementById('loading');
@@ -1825,6 +1815,7 @@
 
       // 결과 렌더링
       renderCards(stacks);
+      renderArchDiagram(stacks);
       document.getElementById('result-query-text').textContent = query;
       document.getElementById('result-count-text').textContent = `${stacks.length}가지 최적 도구`;
 
