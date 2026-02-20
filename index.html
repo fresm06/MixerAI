@@ -934,179 +934,12 @@
         <span class="query-label">검색 결과</span>
         <span class="query-text" id="result-query-text">얼굴 인식으로 닮은 연예인 찾기 앱</span>
       </div>
-      <h2 class="results-title">추천 AI 테크스택<br><span style="background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">5가지 최적 도구</span></h2>
+      <h2 class="results-title">추천 AI 테크스택<br><span id="result-count-text" style="background:var(--grad-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">최적 AI 도구</span></h2>
       <p class="results-subtitle">입력하신 프로젝트에 최적화된 AI 서비스 조합입니다. 각 도구는 호환성과 비용 효율을 고려해 선정되었습니다.</p>
     </div>
 
-    <!-- Stack Cards -->
-    <div class="stack-grid" id="stack-grid">
-
-      <!-- Card 1: LLM -->
-      <div class="stack-card">
-        <div class="card-top">
-          <div class="card-icon-wrap">🧠</div>
-          <div class="card-tags">
-            <span class="tag tag-category">LLM</span>
-            <span class="tag tag-usage">사용량 기반</span>
-          </div>
-        </div>
-        <div class="card-name">Claude API</div>
-        <div class="card-subtitle">by Anthropic</div>
-        <p class="card-desc">자연어 이해와 생성에 최적화된 최신 LLM. 연예인 정보 검색, 결과 설명 생성, 사용자 대화 처리에 활용합니다. 긴 컨텍스트 창으로 복잡한 쿼리도 정확히 처리합니다.</p>
-        <div class="card-meta">
-          <div class="meta-row">
-            <span class="meta-label">비용</span>
-            <span class="card-price">$3~15 / 1M tokens</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">난이도</span>
-            <div class="difficulty-dots">
-              <span class="dot filled"></span><span class="dot filled"></span>
-              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a href="https://docs.anthropic.com" target="_blank" class="btn-docs">
-            공식 문서 보기
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 2: Computer Vision -->
-      <div class="stack-card">
-        <div class="card-top">
-          <div class="card-icon-wrap">👁️</div>
-          <div class="card-tags">
-            <span class="tag tag-category">Vision</span>
-            <span class="tag tag-usage">사용량 기반</span>
-          </div>
-        </div>
-        <div class="card-name">AWS Rekognition</div>
-        <div class="card-subtitle">by Amazon Web Services</div>
-        <p class="card-desc">업계 최고 수준의 얼굴 감지·분석·비교 API. 얼굴 특징점 추출 및 유사도 비교에 특화되어 있습니다. Google Cloud Vision보다 얼굴 인식 정확도가 높고 AWS 생태계와 통합이 용이합니다.</p>
-        <div class="card-meta">
-          <div class="meta-row">
-            <span class="meta-label">비용</span>
-            <span class="card-price">$1 / 1,000 이미지</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">난이도</span>
-            <div class="difficulty-dots">
-              <span class="dot filled"></span><span class="dot filled"></span>
-              <span class="dot filled"></span><span class="dot filled"></span><span class="dot"></span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a href="https://docs.aws.amazon.com/rekognition" target="_blank" class="btn-docs">
-            공식 문서 보기
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 3: Database -->
-      <div class="stack-card">
-        <div class="card-top">
-          <div class="card-icon-wrap">🗄️</div>
-          <div class="card-tags">
-            <span class="tag tag-category">Database</span>
-            <span class="tag tag-free">무료 플랜</span>
-          </div>
-        </div>
-        <div class="card-name">Supabase</div>
-        <div class="card-subtitle">PostgreSQL + Realtime + Auth</div>
-        <p class="card-desc">오픈소스 Firebase 대안. 연예인 얼굴 벡터 데이터, 사용자 검색 기록, 매칭 결과 저장에 적합합니다. pgvector 확장으로 임베딩 기반 유사도 검색도 가능합니다.</p>
-        <div class="card-meta">
-          <div class="meta-row">
-            <span class="meta-label">비용</span>
-            <span class="card-price">무료 ~ $25/월</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">난이도</span>
-            <div class="difficulty-dots">
-              <span class="dot filled"></span><span class="dot filled"></span>
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a href="https://supabase.com/docs" target="_blank" class="btn-docs">
-            공식 문서 보기
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 4: Backend -->
-      <div class="stack-card">
-        <div class="card-top">
-          <div class="card-icon-wrap">⚡</div>
-          <div class="card-tags">
-            <span class="tag tag-category">Backend</span>
-            <span class="tag tag-free">무료 플랜</span>
-          </div>
-        </div>
-        <div class="card-name">Vercel + FastAPI</div>
-        <div class="card-subtitle">Edge Functions + Python API</div>
-        <p class="card-desc">Vercel로 프론트엔드와 서버리스 함수를 배포하고, FastAPI로 이미지 처리 및 AI API 오케스트레이션을 담당합니다. 빠른 배포와 자동 스케일링이 강점입니다.</p>
-        <div class="card-meta">
-          <div class="meta-row">
-            <span class="meta-label">비용</span>
-            <span class="card-price">무료 ~ $20/월</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">난이도</span>
-            <div class="difficulty-dots">
-              <span class="dot filled"></span><span class="dot filled"></span>
-              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a href="https://vercel.com/docs" target="_blank" class="btn-docs">
-            공식 문서 보기
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 5: Frontend -->
-      <div class="stack-card">
-        <div class="card-top">
-          <div class="card-icon-wrap">🎨</div>
-          <div class="card-tags">
-            <span class="tag tag-category">Frontend</span>
-            <span class="tag tag-free">오픈소스</span>
-          </div>
-        </div>
-        <div class="card-name">Next.js + Tailwind CSS</div>
-        <div class="card-subtitle">React Framework + Utility CSS</div>
-        <p class="card-desc">이미지 업로드, 카메라 접근, 결과 시각화에 최적화된 React 프레임워크. Tailwind로 빠른 UI 개발이 가능하며, App Router로 서버/클라이언트 컴포넌트를 유연하게 구성할 수 있습니다.</p>
-        <div class="card-meta">
-          <div class="meta-row">
-            <span class="meta-label">비용</span>
-            <span class="card-price">무료 (오픈소스)</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">난이도</span>
-            <div class="difficulty-dots">
-              <span class="dot filled"></span><span class="dot filled"></span>
-              <span class="dot filled"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a href="https://nextjs.org/docs" target="_blank" class="btn-docs">
-            공식 문서 보기
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </div>
-      </div>
-
-    </div><!-- /stack-grid -->
+    <!-- Stack Cards (동적 렌더링) -->
+    <div class="stack-grid" id="stack-grid"></div><!-- /stack-grid -->
 
     <!-- Architecture Diagram -->
     <div class="arch-section">
@@ -1190,6 +1023,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script>
 // ===================== FILTER TOGGLE =====================
 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1216,54 +1050,173 @@ document.querySelectorAll('.chip').forEach(chip => {
   });
 });
 
-// ===================== CARD MOUSE EFFECT =====================
-document.querySelectorAll('.stack-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-    card.style.setProperty('--mx', x + '%');
-    card.style.setProperty('--my', y + '%');
-  });
-});
+// ===================== TOAST =====================
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.background = isError
+    ? 'rgba(220,60,60,0.18)'
+    : 'rgba(224,225,221,0.12)';
+  toast.style.borderColor = isError ? '#e05050' : 'var(--accent)';
+  toast.style.color = isError ? '#e07070' : 'var(--accent)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), isError ? 4000 : 2800);
+}
 
-// ===================== LOADING SEQUENCE =====================
-function runLoading(query) {
+// ===================== GEMINI API =====================
+async function callGeminiAPI(query, filters) {
+  const apiKey = typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : null;
+  if (!apiKey) throw new Error('config.js에 API 키가 없습니다.');
+
+  const budgetMap = { free: '무료 도구 위주', paid: '유료 도구 허용', mixed: '무료/유료 혼합' };
+  const skillMap  = { nocode: '노코드 (코딩 불필요)', lowcode: '로우코드 (기초 코딩)', pro: '전문 개발자 수준' };
+
+  const prompt = `당신은 AI 테크스택 전문 컨설턴트입니다. 아래 프로젝트에 최적인 AI 서비스/도구 조합 5가지를 추천해주세요.
+
+프로젝트 설명: ${query}
+예산 조건: ${budgetMap[filters.budget] || filters.budget}
+기술 수준: ${skillMap[filters.skill] || filters.skill}
+타겟 플랫폼: ${filters.platform}
+
+다음 JSON 형식으로만 응답하세요 (다른 텍스트 없이):
+{
+  "stacks": [
+    {
+      "category": "카테고리 (예: LLM, Computer Vision, 데이터베이스, 백엔드, 프론트엔드, 음성인식 등)",
+      "icon": "관련 이모지 1개",
+      "name": "서비스/라이브러리명",
+      "subtitle": "제공사 또는 한줄 설명",
+      "description": "이 프로젝트에 이 도구가 적합한 구체적인 이유 2~3문장.",
+      "pricing": "가격 정보 (예: 무료, 월 $25, $0.002/1K tokens)",
+      "pricingType": "free 또는 paid 또는 usage 중 정확히 하나",
+      "difficulty": 난이도 정수(1~5),
+      "docsUrl": "공식 문서 또는 홈페이지 URL"
+    }
+  ]
+}`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.7, responseMimeType: 'application/json' }
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `API 오류 (${resp.status})`);
+  }
+
+  const data = await resp.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('API 응답이 비어있습니다.');
+  return JSON.parse(text);
+}
+
+// ===================== RENDER CARDS =====================
+function renderCards(stacks) {
+  const svgArrow = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+  document.getElementById('stack-grid').innerHTML = stacks.map((s, i) => {
+    const tagClass = s.pricingType === 'free' ? 'tag-free' : s.pricingType === 'usage' ? 'tag-usage' : 'tag-paid';
+    const tagLabel = s.pricingType === 'free' ? '무료' : s.pricingType === 'usage' ? '사용량 기반' : '유료';
+    const dots = Array.from({ length: 5 }, (_, j) =>
+      `<span class="dot${j < s.difficulty ? ' filled' : ''}"></span>`
+    ).join('');
+    const safeUrl = s.docsUrl?.startsWith('http') ? s.docsUrl : '#';
+
+    return `<div class="stack-card" style="animation-delay:${i * 0.07}s">
+      <div class="card-top">
+        <div class="card-icon-wrap">${s.icon || '🔧'}</div>
+        <div class="card-tags">
+          <span class="tag tag-category">${s.category}</span>
+          <span class="tag ${tagClass}">${tagLabel}</span>
+        </div>
+      </div>
+      <div class="card-name">${s.name}</div>
+      <div class="card-subtitle">${s.subtitle}</div>
+      <p class="card-desc">${s.description}</p>
+      <div class="card-meta">
+        <div class="meta-row">
+          <span class="meta-label">비용</span>
+          <span class="card-price">${s.pricing}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">난이도</span>
+          <div class="difficulty-dots">${dots}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="${safeUrl}" target="_blank" rel="noopener" class="btn-docs">
+          공식 문서 보기 ${svgArrow}
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+
+  // 동적 생성된 카드에 마우스 효과 재부착
+  document.querySelectorAll('.stack-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    });
+  });
+}
+
+// ===================== LOADING + API =====================
+async function runLoading(query, filters) {
   const loading = document.getElementById('loading');
   const steps = ['step-1', 'step-2', 'step-3'];
-  steps.forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.remove('active', 'done');
+  steps.forEach(id => document.getElementById(id).classList.remove('active', 'done'));
+  loading.classList.add('show');
+
+  // API 호출과 애니메이션을 동시에 시작
+  const apiPromise = callGeminiAPI(query, filters);
+
+  // 로딩 스텝 애니메이션 (최소 2.7초)
+  await new Promise(resolve => {
+    let current = 0;
+    function nextStep() {
+      if (current > 0) {
+        document.getElementById(steps[current - 1]).classList.remove('active');
+        document.getElementById(steps[current - 1]).classList.add('done');
+      }
+      if (current < steps.length) {
+        document.getElementById(steps[current]).classList.add('active');
+        current++;
+        if (current < steps.length) setTimeout(nextStep, 900);
+        else setTimeout(resolve, 800);
+      }
+    }
+    nextStep();
   });
 
-  loading.classList.add('show');
-  let current = 0;
-
-  function nextStep() {
-    if (current > 0) {
-      document.getElementById(steps[current - 1]).classList.remove('active');
-      document.getElementById(steps[current - 1]).classList.add('done');
-    }
-    if (current < steps.length) {
-      document.getElementById(steps[current]).classList.add('active');
-      current++;
-      if (current < steps.length) setTimeout(nextStep, 900);
-      else setTimeout(showResults, 1000);
-    }
-  }
-
-  nextStep();
-
-  function showResults() {
+  // API 응답 대기 (애니메이션보다 오래 걸릴 경우)
+  let stacks;
+  try {
+    const data = await apiPromise;
+    stacks = data.stacks;
+    if (!Array.isArray(stacks) || stacks.length === 0) throw new Error('추천 결과를 받지 못했습니다.');
+  } catch (err) {
     loading.classList.remove('show');
-    const results = document.getElementById('results');
-    results.classList.add('show');
-    const queryText = document.getElementById('result-query-text');
-    queryText.textContent = query || '얼굴 인식으로 닮은 연예인 찾기 앱';
-    setTimeout(() => {
-      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    showToast('오류: ' + err.message, true);
+    return;
   }
+
+  loading.classList.remove('show');
+
+  // 결과 렌더링
+  renderCards(stacks);
+  document.getElementById('result-query-text').textContent = query;
+  document.getElementById('result-count-text').textContent = `${stacks.length}가지 최적 도구`;
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
 // ===================== SUBMIT =====================
@@ -1281,10 +1234,14 @@ document.getElementById('btn-submit').addEventListener('click', () => {
     }, 2000);
     return;
   }
-  runLoading(query);
+  const budget   = document.querySelector('[data-group="budget"].active')?.dataset.value || 'mixed';
+  const skill    = document.querySelector('[data-group="skill"].active')?.dataset.value || 'lowcode';
+  const platforms = [...document.querySelectorAll('[data-group="platform"].active')]
+    .map(b => b.dataset.value).join(', ') || 'Web';
+  runLoading(query, { budget, skill, platform: platforms });
 });
 
-// Enter key in textarea (Ctrl+Enter)
+// Ctrl+Enter 단축키
 document.getElementById('project-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
     document.getElementById('btn-submit').click();
@@ -1301,19 +1258,12 @@ document.getElementById('btn-reset').addEventListener('click', () => {
 
 // ===================== SHARE =====================
 document.getElementById('btn-share').addEventListener('click', () => {
-  const url = window.location.href;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url);
-  }
-  const toast = document.getElementById('toast');
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2800);
+  if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
+  showToast('링크가 클립보드에 복사되었습니다!');
 });
 
 // ===================== PDF =====================
-document.getElementById('btn-pdf').addEventListener('click', () => {
-  window.print();
-});
+document.getElementById('btn-pdf').addEventListener('click', () => window.print());
 
 // ===================== SCROLL REVEAL =====================
 const revealObserver = new IntersectionObserver((entries) => {
