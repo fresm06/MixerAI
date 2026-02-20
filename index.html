@@ -1065,9 +1065,6 @@ function showToast(msg, isError = false) {
 
 // ===================== GEMINI API =====================
 async function callGeminiAPI(query, filters) {
-  const apiKey = typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : null;
-  if (!apiKey) throw new Error('config.js에 API 키가 없습니다.');
-
   const budgetMap = { free: '무료 도구 위주', paid: '유료 도구 허용', mixed: '무료/유료 혼합' };
   const skillMap  = { nocode: '노코드 (코딩 불필요)', lowcode: '로우코드 (기초 코딩)', pro: '전문 개발자 수준' };
 
@@ -1095,15 +1092,29 @@ async function callGeminiAPI(query, filters) {
   ]
 }`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, responseMimeType: 'application/json' }
-    })
-  });
+  const requestBody = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.7, responseMimeType: 'application/json' }
+  };
+
+  // 로컬: config.js의 키로 Gemini 직접 호출
+  // 배포(Cloudflare): /api/recommend 프록시 경유 (키는 서버 환경변수)
+  const localKey = typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : null;
+  let resp;
+
+  if (localKey) {
+    resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${localKey}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }
+    );
+  } else {
+    // Cloudflare Pages Function 경유
+    resp = await fetch('/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+  }
 
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
