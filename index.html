@@ -1619,22 +1619,28 @@
       const budgetMap = { free: '무료 도구 위주', paid: '유료 도구 허용', mixed: '무료/유료 혼합' };
       const skillMap = { nocode: '노코드 (코딩 불필요)', lowcode: '로우코드 (기초 코딩)', pro: '전문 개발자 수준' };
 
-      const prompt = `당신은 AI 테크스택 전문 컨설턴트입니다. 아래 프로젝트에 최적인 AI 서비스/도구 조합 5가지를 추천해주세요.
+      const prompt = `당신은 AI 서비스 전문 컨설턴트입니다. 아래 프로젝트를 구현하는 데 필요한 AI 서비스/AI API/AI 도구만 5가지 추천해주세요.
 
 프로젝트 설명: ${query}
 예산 조건: ${budgetMap[filters.budget] || filters.budget}
 기술 수준: ${skillMap[filters.skill] || filters.skill}
 타겟 플랫폼: ${filters.platform}
 
+[필수 규칙]
+- 반드시 AI 기능을 제공하는 서비스/API만 추천할 것 (예: LLM API, 이미지 생성 AI, 음성 인식 AI, Computer Vision API, AI 코딩 도우미, AI 검색 API 등)
+- Next.js, React, FastAPI, Supabase, Vercel, Firebase 같은 일반 프레임워크·데이터베이스·인프라는 절대 추천하지 말 것
+- 각 추천 항목은 서로 다른 AI 기능 카테고리를 담당해야 함
+- 카테고리 예시: LLM, 이미지 생성, Computer Vision, 음성 인식(STT), 음성 합성(TTS), 임베딩/검색, AI 코딩, 번역 AI, 감정 분석, 추천 AI, 영상 생성 AI 등
+
 다음 JSON 형식으로만 응답하세요 (다른 텍스트 없이):
 {
   "stacks": [
     {
-      "category": "카테고리 (예: LLM, Computer Vision, 데이터베이스, 백엔드, 프론트엔드, 음성인식 등)",
+      "category": "AI 기능 카테고리 (예: LLM, Computer Vision, 음성 인식, 이미지 생성 등)",
       "icon": "관련 이모지 1개",
-      "name": "서비스/라이브러리명",
+      "name": "AI 서비스명 또는 AI API명",
       "subtitle": "제공사 또는 한줄 설명",
-      "description": "이 프로젝트에 이 도구가 적합한 구체적인 이유 2~3문장.",
+      "description": "이 AI 도구가 해당 프로젝트에 구체적으로 어떤 AI 기능을 제공하는지 2~3문장.",
       "pricing": "가격 정보 (예: 무료, 월 $25, $0.002/1K tokens)",
       "pricingType": "free 또는 paid 또는 usage 중 정확히 하나",
       "difficulty": 난이도 정수(1~5),
